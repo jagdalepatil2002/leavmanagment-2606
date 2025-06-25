@@ -400,66 +400,87 @@ function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center p-4">
-        <div className="bg-white/10 backdrop-blur-lg p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20">
+      <div className="min-h-screen bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Background Animation Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-10 -left-10 w-80 h-80 bg-white/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+          <div className="absolute -bottom-10 -right-10 w-80 h-80 bg-pink-300/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-300/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-500"></div>
+        </div>
+
+        <div className="relative bg-white/15 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/30 hover:bg-white/20 transition-all duration-500">
           <div className="text-center mb-8">
-            <div className="mx-auto w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mb-4">
-              <span className="text-3xl">📋</span>
+            <div className="mx-auto w-24 h-24 bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center mb-6 shadow-xl backdrop-blur-sm border border-white/20">
+              <span className="text-4xl animate-bounce">📋</span>
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Leave Management</h1>
-            <p className="text-white/80">Welcome back! Please sign in to continue</p>
+            <h1 className="text-4xl font-bold text-white mb-3 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+              Leave Management
+            </h1>
+            <p className="text-white/90 text-lg font-medium">Welcome! Please sign in to continue</p>
           </div>
           
           <form onSubmit={login} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">
-                Employee ID
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-white/95 mb-2 tracking-wide">
+                Username
               </label>
-              <input
-                type="text"
-                placeholder="e.g., EMP001 or HR001"
-                value={loginData.employee_id}
-                onChange={(e) => setLoginData(prev => ({...prev, employee_id: e.target.value}))}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-white/50 focus:border-transparent placeholder-white/50 text-white backdrop-blur-sm"
-                required
-              />
+              <div className="relative group">
+                <input
+                  type="text"
+                  placeholder="Enter your username"
+                  value={loginData.employee_id}
+                  onChange={(e) => setLoginData(prev => ({...prev, employee_id: e.target.value}))}
+                  className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-2xl focus:ring-4 focus:ring-white/30 focus:border-white/50 placeholder-white/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/15 focus:bg-white/20 text-lg font-medium"
+                  required
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">
+            <div className="space-y-2">
+              <label className="block text-sm font-semibold text-white/95 mb-2 tracking-wide">
                 Password
               </label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={loginData.password}
-                onChange={(e) => setLoginData(prev => ({...prev, password: e.target.value}))}
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-white/50 focus:border-transparent placeholder-white/50 text-white backdrop-blur-sm"
-                required
-              />
+              <div className="relative group">
+                <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData(prev => ({...prev, password: e.target.value}))}
+                  className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-2xl focus:ring-4 focus:ring-white/30 focus:border-white/50 placeholder-white/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/15 focus:bg-white/20 text-lg font-medium"
+                  required
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
             
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 px-4 rounded-xl hover:from-purple-700 hover:to-pink-700 focus:ring-2 focus:ring-purple-500 disabled:opacity-50 font-medium transition-all duration-200 transform hover:scale-105"
+              className="relative w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-4 px-6 rounded-2xl font-bold text-lg tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:ring-4 focus:ring-white/30 disabled:opacity-50 disabled:transform-none group overflow-hidden"
             >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Signing in...
-                </div>
-              ) : 'Sign In'}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative flex items-center justify-center">
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent mr-3"></div>
+                    <span className="animate-pulse">Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="mr-2">🚀</span>
+                    Sign In
+                  </>
+                )}
+              </div>
             </button>
           </form>
           
-          <div className="mt-8 text-sm text-white/70 text-center">
-            <p className="mb-3"><strong className="text-white">Demo Credentials:</strong></p>
-            <div className="bg-white/10 rounded-lg p-3 backdrop-blur-sm">
-              <p className="mb-1">👥 <strong>Employees:</strong> EMP001-EMP005</p>
-              <p className="mb-1">🔑 <strong>Password:</strong> pass123</p>
-              <p>👤 <strong>HR:</strong> HR001 / hr123</p>
-            </div>
+          <div className="mt-8 text-center">
+            <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent mb-6"></div>
+            <p className="text-white/70 text-sm font-medium">
+              Secure Employee Portal
+            </p>
           </div>
         </div>
       </div>
