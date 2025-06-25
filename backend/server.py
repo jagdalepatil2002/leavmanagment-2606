@@ -155,6 +155,12 @@ async def submit_leave(request: LeaveSubmissionRequest, current_user: dict = Dep
     if current_user["role"] != "employee":
         raise HTTPException(status_code=403, detail="Only employees can submit leave")
     
+    if not current_user.get("active", True):
+        raise HTTPException(status_code=403, detail="Account is deactivated")
+    
+    # Calculate total days off as sum of monthly leaves and optional leaves
+    calculated_total_days_off = len(request.monthly_leave_dates) + len(request.optional_leave_dates)
+    
     # Check if submission already exists for this month/year
     existing = await db.leave_submissions.find_one({
         "user_id": current_user["id"],
@@ -175,6 +181,7 @@ async def submit_leave(request: LeaveSubmissionRequest, current_user: dict = Dep
         "additional_hours": request.additional_hours,
         "pending_leaves": request.pending_leaves,
         "total_days_off_dates": request.total_days_off_dates,
+        "calculated_total_days_off": calculated_total_days_off,  # Auto-calculated field
         "submitted_at": datetime.now().isoformat()
     }
     
