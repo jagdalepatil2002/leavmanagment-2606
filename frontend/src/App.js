@@ -524,8 +524,8 @@ function App() {
                 <input
                   type="text"
                   placeholder="Enter your username"
-                  value={loginData.employee_id}
-                  onChange={(e) => setLoginData(prev => ({...prev, employee_id: e.target.value}))}
+                  value={loginData.username}
+                  onChange={(e) => setLoginData(prev => ({...prev, username: e.target.value}))}
                   className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-2xl focus:ring-4 focus:ring-white/30 focus:border-white/50 placeholder-white/60 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/15 focus:bg-white/20 text-lg font-medium"
                   required
                 />
