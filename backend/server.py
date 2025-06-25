@@ -128,7 +128,7 @@ async def startup_event():
         # Update existing HR users to have username field if they don't
         await db.users.update_many(
             {"role": "hr", "username": {"$exists": False}},
-            {"$set": {"username": "tejasai"}}
+            {"$set": {"username": "tejasartificial"}}
         )
 
 # Routes
