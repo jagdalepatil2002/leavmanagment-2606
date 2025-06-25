@@ -131,13 +131,23 @@ class LeaveManagementTester:
         # First create an employee with username
         username = f"user{random.randint(1000, 9999)}"
         emp_id = f"EMP{random.randint(1000, 9999)}"
+        
+        # Save current token and user
+        current_token = self.token
+        current_user = self.user
+        
+        # Login as HR if not already
+        if not self.user or self.user.get('role') != 'hr':
+            if not self.test_login("tejasartificial", "Tejas#2377"):
+                return False
+        
         self.test_create_employee(username, emp_id, "password123", "Test Department")
         
         # Then revoke access
         self.test_revoke_access(emp_id)
         
         # Try to login with revoked credentials
-        return self.run_test(
+        result = self.run_test(
             "Login with inactive user credentials",
             "POST",
             "login",
@@ -145,6 +155,12 @@ class LeaveManagementTester:
             data={"username": username, "password": "password123"},
             auth=False
         )[0]
+        
+        # Restore original token and user
+        self.token = current_token
+        self.user = current_user
+        
+        return result
 
     def test_submit_leave(self, month, year):
         """Test leave submission with total days calculation"""
