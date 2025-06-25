@@ -252,7 +252,7 @@ function App() {
       if (response.ok) {
         const result = await response.json();
         alert(`✅ ${result.message}`);
-        setNewEmployee({ name: '', employee_id: '', password: '', department: '' });
+        setNewEmployee({ name: '', username: '', employee_id: '', password: '', department: '' });
         setShowCreateEmployee(false);
         fetchEmployees();
       } else {
