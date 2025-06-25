@@ -301,8 +301,11 @@ class LeaveManagementTester:
         return success and success2
 
     # HR Management Endpoints Tests
-    def test_create_employee(self, employee_id=None, password=None, department=None):
-        """Test creating a new employee"""
+    def test_create_employee(self, username=None, employee_id=None, password=None, department=None):
+        """Test creating a new employee with username field"""
+        if not username:
+            username = f"user{random.randint(1000, 9999)}"
+            
         if not employee_id:
             employee_id = f"EMP{random.randint(1000, 9999)}"
         
@@ -314,13 +317,14 @@ class LeaveManagementTester:
             
         data = {
             "name": f"Test Employee {employee_id}",
+            "username": username,  # New username field
             "employee_id": employee_id,
             "password": password,
             "department": department
         }
         
         success, response = self.run_test(
-            "Create new employee",
+            "Create new employee with username",
             "POST",
             "hr/create-employee",
             200,
@@ -330,6 +334,20 @@ class LeaveManagementTester:
         if success and 'employee' in response:
             self.created_employee_id = employee_id
             self.created_employee_uuid = response['employee']['id']
+            
+            # Verify username field is present in response
+            if 'username' in response['employee']:
+                self.log_result(
+                    "Verify username in employee response", 
+                    True, 
+                    f"Username: {response['employee']['username']}"
+                )
+            else:
+                self.log_result(
+                    "Verify username in employee response", 
+                    False, 
+                    "Username field missing from response"
+                )
             
         return success, response
 
