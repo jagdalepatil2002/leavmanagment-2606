@@ -278,3 +278,5 @@ agent_communication:
       message: "Updated backend with username functionality and HR user creation. Added username field to User model, updated authentication to use username instead of employee_id, and added endpoint for HR to create other HR users with same privileges. Ready for backend testing."
     - agent: "main"
       message: "Fixed all core username issues - master admin username is now 'tejasartificial', frontend login form uses username field, added HR creation interface, and added username field to employee creation. Backend and frontend changes complete. Ready for comprehensive testing."
+    - agent: "testing"
+      message: "Completed comprehensive backend testing for the Leave Management System. All backend tests are passing successfully. Authentication with username works correctly, HR users can create other HR users with the same privileges, and employee creation with username field works properly. Duplicate username/employee_id validation is working as expected. The master admin user exists with the correct username 'tejasartificial'. All endpoints that use authentication work with username-based tokens."
