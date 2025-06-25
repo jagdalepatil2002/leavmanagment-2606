@@ -46,6 +46,7 @@ function App() {
   const [showCreateEmployee, setShowCreateEmployee] = useState(false);
   const [newEmployee, setNewEmployee] = useState({
     name: '',
+    username: '',  // Add username field
     employee_id: '',
     password: '',
     department: ''
