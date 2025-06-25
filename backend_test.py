@@ -764,7 +764,7 @@ class LeaveManagementTester:
         
         # Login as HR if not already
         if not self.user or self.user.get('role') != 'hr':
-            if not self.test_login("tejasai", "Tejas#2377"):
+            if not self.test_login("tejasartificial", "Tejas#2377"):
                 return False
         
         # Test HR analytics
