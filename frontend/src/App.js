@@ -244,6 +244,37 @@ function App() {
     }
   };
 
+  const createHR = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/hr/create-hr`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(newHR),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`✅ ${result.message}`);
+        setNewHR({ name: '', username: '', employee_id: '', password: '', department: '' });
+        setShowCreateHR(false);
+        // Optionally refresh employees list to show HR users too
+        fetchEmployees();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.detail}`);
+      }
+    } catch (error) {
+      console.error('Create HR error:', error);
+      alert('❌ Failed to create HR user. Please try again.');
+    }
+    setLoading(false);
+  };
+
   const createEmployee = async (e) => {
     e.preventDefault();
     setLoading(true);
