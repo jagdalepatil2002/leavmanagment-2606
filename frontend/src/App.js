@@ -73,6 +73,7 @@ function App() {
         } else if (userData.role === 'hr') {
           fetchAllSubmissions();
           fetchHrAnalytics(filter.month, filter.year);
+          fetchEmployees();
         }
       } catch (error) {
         console.error('Invalid token:', error);
