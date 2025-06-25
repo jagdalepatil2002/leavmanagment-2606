@@ -367,7 +367,7 @@ async def get_hr_analytics(month: int, year: int, current_user: dict = Depends(g
         submissions.append(submission)
     
     # Calculate overall statistics
-    total_employees = await db.users.count_documents({"role": "employee"})
+    total_employees = await db.users.count_documents({"role": "employee", "active": True})
     employees_submitted = len(set(sub["user_id"] for sub in submissions))
     
     total_leave_days = sum(
@@ -395,6 +395,114 @@ async def get_hr_analytics(month: int, year: int, current_user: dict = Depends(g
         "year": year,
         "submission_rate": round((employees_submitted / total_employees) * 100, 1) if total_employees > 0 else 0
     }
+
+# HR Management Endpoints
+@app.post("/api/hr/create-employee")
+async def create_employee(request: CreateEmployeeRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can create employees")
+    
+    # Check if employee ID already exists
+    existing = await db.users.find_one({"employee_id": request.employee_id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Employee ID already exists")
+    
+    employee_data = {
+        "id": str(uuid.uuid4()),
+        "name": request.name,
+        "employee_id": request.employee_id,
+        "password": request.password,
+        "role": "employee",
+        "department": request.department,
+        "active": True
+    }
+    
+    await db.users.insert_one(employee_data)
+    employee_data.pop("_id", None)
+    employee_data.pop("password", None)  # Don't return password
+    
+    return {"message": "Employee created successfully", "employee": employee_data}
+
+@app.get("/api/hr/employees")
+async def get_employees(current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can view employees")
+    
+    employees = []
+    async for employee in db.users.find({"role": "employee"}):
+        employee.pop("_id", None)
+        employee.pop("password", None)  # Don't return passwords
+        employees.append(employee)
+    
+    return {"employees": employees}
+
+@app.put("/api/hr/update-employee/{employee_id}")
+async def update_employee(employee_id: str, request: UpdateEmployeeRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can update employees")
+    
+    update_data = {}
+    if request.name:
+        update_data["name"] = request.name
+    if request.password:
+        update_data["password"] = request.password
+    if request.department:
+        update_data["department"] = request.department
+    if request.active is not None:
+        update_data["active"] = request.active
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    result = await db.users.update_one(
+        {"employee_id": employee_id, "role": "employee"},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    return {"message": "Employee updated successfully"}
+
+@app.delete("/api/hr/delete-employee/{employee_id}")
+async def delete_employee(employee_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can delete employees")
+    
+    # Delete employee
+    result = await db.users.delete_one({"employee_id": employee_id, "role": "employee"})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    # Also delete their leave submissions
+    await db.leave_submissions.delete_many({"employee_id": employee_id})
+    
+    return {"message": "Employee and all related data deleted successfully"}
+
+@app.delete("/api/hr/delete-month-data/{month}/{year}")
+async def delete_month_data(month: int, year: int, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can delete month data")
+    
+    result = await db.leave_submissions.delete_many({"month": month, "year": year})
+    
+    return {"message": f"Deleted {result.deleted_count} submissions for {calendar.month_name[month]} {year}"}
+
+@app.post("/api/hr/revoke-access/{employee_id}")
+async def revoke_access(employee_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can revoke access")
+    
+    result = await db.users.update_one(
+        {"employee_id": employee_id, "role": "employee"},
+        {"$set": {"active": False}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    return {"message": "Employee access revoked successfully"}
 
 if __name__ == "__main__":
     import uvicorn
