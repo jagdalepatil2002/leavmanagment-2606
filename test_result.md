@@ -153,13 +153,49 @@ backend:
           comment: "Master admin credentials updated to username: tejasartificial, password: Tejas#2377"
 
 frontend:
-  - task: "Fix date formatting to DD-MM-YYYY"
+  - task: "Fix login form to use username field"
     implemented: true
     working: true
     file: "App.js"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Fixed login form to use username field instead of employee_id, updated all related state and form handling"
+
+  - task: "Add HR creation interface"
+    implemented: true
+    working: true
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Added HR creation modal and functionality, HR can now create both employees and other HR users with same privileges"
+
+  - task: "Add username field to employee creation"
+    implemented: true
+    working: true
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Added username field to employee creation form, now employees have separate username and employee_id fields"
+
+  - task: "Fix date formatting to DD-MM-YYYY"
+    implemented: true
+    working: true
+    file: "App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
@@ -171,7 +207,7 @@ frontend:
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
@@ -183,7 +219,7 @@ frontend:
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
@@ -195,7 +231,7 @@ frontend:
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
@@ -207,7 +243,7 @@ frontend:
     file: "App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
