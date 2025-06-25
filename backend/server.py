@@ -512,6 +512,12 @@ async def update_employee(employee_id: str, request: UpdateEmployeeRequest, curr
     update_data = {}
     if request.name:
         update_data["name"] = request.name
+    if request.username:
+        # Check if new username already exists
+        existing_username = await db.users.find_one({"username": request.username})
+        if existing_username and existing_username["employee_id"] != employee_id:
+            raise HTTPException(status_code=400, detail="Username already exists")
+        update_data["username"] = request.username
     if request.password:
         update_data["password"] = request.password
     if request.department:
