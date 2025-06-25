@@ -349,6 +349,52 @@ class LeaveManagementTester:
                     "Username field missing from response"
                 )
             
+            # Test duplicate username validation
+            duplicate_username_data = {
+                "name": "Duplicate Employee",
+                "username": username,  # Same username as before
+                "employee_id": f"EMP{random.randint(10000, 99999)}",
+                "password": "password123",
+                "department": "Engineering"
+            }
+            
+            duplicate_success, duplicate_response = self.run_test(
+                "Create employee with duplicate username",
+                "POST",
+                "hr/create-employee",
+                400,  # Should fail with 400 Bad Request
+                data=duplicate_username_data
+            )
+            
+            self.log_result(
+                "Username uniqueness validation for employee creation", 
+                duplicate_success, 
+                "Correctly rejected duplicate username" if duplicate_success else "Failed to validate username uniqueness"
+            )
+            
+            # Test duplicate employee_id validation
+            duplicate_empid_data = {
+                "name": "Duplicate Employee",
+                "username": f"user{random.randint(10000, 99999)}",
+                "employee_id": employee_id,  # Same employee_id as before
+                "password": "password123",
+                "department": "Engineering"
+            }
+            
+            duplicate_empid_success, duplicate_empid_response = self.run_test(
+                "Create employee with duplicate employee_id",
+                "POST",
+                "hr/create-employee",
+                400,  # Should fail with 400 Bad Request
+                data=duplicate_empid_data
+            )
+            
+            self.log_result(
+                "Employee ID uniqueness validation for employee creation", 
+                duplicate_empid_success, 
+                "Correctly rejected duplicate employee_id" if duplicate_empid_success else "Failed to validate employee_id uniqueness"
+            )
+            
         return success, response
 
     def test_get_employees(self):
