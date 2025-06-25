@@ -432,14 +432,20 @@ async def create_employee(request: CreateEmployeeRequest, current_user: dict = D
     if current_user["role"] != "hr":
         raise HTTPException(status_code=403, detail="Only HR can create employees")
     
+    # Check if username already exists
+    existing_username = await db.users.find_one({"username": request.username})
+    if existing_username:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    
     # Check if employee ID already exists
-    existing = await db.users.find_one({"employee_id": request.employee_id})
-    if existing:
+    existing_employee_id = await db.users.find_one({"employee_id": request.employee_id})
+    if existing_employee_id:
         raise HTTPException(status_code=400, detail="Employee ID already exists")
     
     employee_data = {
         "id": str(uuid.uuid4()),
         "name": request.name,
+        "username": request.username,  # Add username field
         "employee_id": request.employee_id,
         "password": request.password,
         "role": "employee",
