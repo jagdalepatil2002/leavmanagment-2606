@@ -821,9 +821,19 @@ function App() {
                           <span className="mr-1">🔴</span> Total Days Off:
                         </strong>
                         <p className="text-gray-700">
-                          {submission.total_days_off_dates.length > 0 
-                            ? submission.total_days_off_dates.map(date => formatDate(date)).join(', ')
-                            : 'None'}
+                          <span className="text-lg font-bold text-red-600">
+                            {(submission.calculated_total_days_off || 
+                              (submission.monthly_leave_dates.length + submission.optional_leave_dates.length))}
+                          </span>
+                          <span className="text-sm text-gray-500 ml-2">
+                            (Monthly: {submission.monthly_leave_dates.length} + Optional: {submission.optional_leave_dates.length})
+                          </span>
+                          {submission.total_days_off_dates.length > 0 && (
+                            <div className="mt-1 text-sm">
+                              <span className="text-gray-600">Additional days: </span>
+                              {submission.total_days_off_dates.map(date => formatDate(date)).join(', ')}
+                            </div>
+                          )}
                         </p>
                       </div>
                     </div>
