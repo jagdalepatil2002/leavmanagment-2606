@@ -138,7 +138,7 @@ class LeaveManagementTester:
             "Login with old employee_id-based credentials",
             "POST",
             "login",
-            401,
+            422,  # Validation error since employee_id is not in the model
             data={"employee_id": "HR001", "password": "Tejas#2377"},
             auth=False
         )[0]
