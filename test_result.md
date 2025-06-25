@@ -258,13 +258,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "HR management endpoints testing"
-    - "Login functionality with new HR credentials"
-    - "Total days off calculation verification"
-    - "Date formatting verification"
     - "HR employee management UI testing"
+    - "Date formatting verification in frontend"
+    - "Frontend styling and design verification"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
