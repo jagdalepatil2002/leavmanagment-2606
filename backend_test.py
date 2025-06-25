@@ -387,10 +387,10 @@ class LeaveManagementTester:
             employee_id = self.created_employee_id
             
         # Update with new username
-        new_username = f"updated{random.randint(1000, 9999)}"
+        updated_username = f"updated{random.randint(1000, 9999)}"
         data = {
             "name": f"Updated Employee {employee_id}",
-            "username": new_username,  # Update username
+            "username": updated_username,  # Update username
             "department": "Updated Department"
         }
         
@@ -411,7 +411,7 @@ class LeaveManagementTester:
             
             # Try to update with already used username
             data = {
-                "username": new_username  # Already used by first employee
+                "username": updated_username  # Already used by first employee
             }
             
             duplicate_success, duplicate_response = self.run_test(
