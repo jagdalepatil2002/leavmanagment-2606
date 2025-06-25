@@ -217,6 +217,101 @@ function App() {
     }
   };
 
+  // HR Management Functions
+  const fetchEmployees = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/hr/employees`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEmployees(data.employees);
+      }
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
+
+  const createEmployee = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/hr/create-employee`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(newEmployee),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`✅ ${result.message}`);
+        setNewEmployee({ name: '', employee_id: '', password: '', department: '' });
+        setShowCreateEmployee(false);
+        fetchEmployees();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.detail}`);
+      }
+    } catch (error) {
+      console.error('Create employee error:', error);
+      alert('❌ Failed to create employee. Please try again.');
+    }
+    setLoading(false);
+  };
+
+  const deleteEmployee = async (employeeId) => {
+    if (!confirm('Are you sure you want to delete this employee? This will also delete all their leave data.')) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/hr/delete-employee/${employeeId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        alert('✅ Employee deleted successfully');
+        fetchEmployees();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.detail}`);
+      }
+    } catch (error) {
+      console.error('Delete employee error:', error);
+      alert('❌ Delete failed. Please try again.');
+    }
+  };
+
+  const revokeAccess = async (employeeId) => {
+    if (!confirm('Are you sure you want to revoke access for this employee?')) return;
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/hr/revoke-access/${employeeId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        alert('✅ Employee access revoked successfully');
+        fetchEmployees();
+      } else {
+        const error = await response.json();
+        alert(`❌ Error: ${error.detail}`);
+      }
+    } catch (error) {
+      console.error('Revoke access error:', error);
+      alert('❌ Operation failed. Please try again.');
+    }
+  };
+
   const submitLeave = async (e) => {
     e.preventDefault();
     setLoading(true);
