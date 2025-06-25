@@ -1022,6 +1022,17 @@ function App() {
                       />
                     </div>
                     <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                      <input
+                        type="text"
+                        value={newEmployee.username}
+                        onChange={(e) => setNewEmployee(prev => ({...prev, username: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        placeholder="Login username"
+                        required
+                      />
+                    </div>
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
                       <input
                         type="text"
