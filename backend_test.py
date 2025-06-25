@@ -72,20 +72,35 @@ class LeaveManagementTester:
         except Exception as e:
             return self.log_result(name, False, f"Error: {str(e)}"), None
 
-    def test_login(self, employee_id, password):
-        """Test login functionality"""
+    def test_login(self, username, password):
+        """Test login functionality with username"""
         success, response = self.run_test(
-            f"Login as {employee_id}",
+            f"Login as {username}",
             "POST",
             "login",
             200,
-            data={"employee_id": employee_id, "password": password},
+            data={"username": username, "password": password},
             auth=False
         )
         
         if success and 'token' in response:
             self.token = response['token']
             self.user = response['user']
+            
+            # Verify username and employee_id fields are present in response
+            if 'username' in self.user and 'employee_id' in self.user:
+                self.log_result(
+                    "Verify username and employee_id in response", 
+                    True, 
+                    f"Username: {self.user['username']}, Employee ID: {self.user['employee_id']}"
+                )
+            else:
+                self.log_result(
+                    "Verify username and employee_id in response", 
+                    False, 
+                    f"Missing fields in response: {self.user}"
+                )
+            
             return True
         return False
 
