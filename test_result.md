@@ -102,16 +102,9 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix all the issues for total days off I want addition of monthly leaves plus optional leaves and it is a number.
-dd-mm-yyyy should be DD-MM-YYYY
-Make login page looks attractive with button effects attractive color combination 
-and I want this production ready code.
-Simplify the git branches
-I will be handing this to hr she doesnt know anything about coding
-or make HR login and admin who can do and have all privilages such as addition of employess adding of their password deleting employee revoking access delete data for that month assigning them department etc.
-Remove all dummy credentials and Add HR Username as tejasai and password Tejas#2377
-And HR will login and create new employees etc to login for employees
-Make this code production ready as I am directly deploying this code from github to Production live"
+user_problem_statement: "HR  can create new employees but cannot create a new username how will the log in to the dashboard then. HR can give password but username is not an option fix this.
+The UI Sucks it looks like 19th century use some good color combanition bg colorolr for full end to end software make it a dark theme include small animation
+The landing page looks like school project and I want something dynamic and I want everthing end to end ready for deployment also one more thing HR can add entity who has same privilages as her self means role based access control"
 
 backend:
   - task: "Update User model with department and active fields"
