@@ -111,18 +111,18 @@ class LeaveManagementTester:
             "POST",
             "login",
             401,
-            data={"employee_id": "invalid", "password": "invalid"},
+            data={"username": "invalid", "password": "invalid"},
             auth=False
         )[0]
 
     def test_old_credentials_login(self):
-        """Test that old dummy credentials no longer work"""
+        """Test that old employee_id-based login no longer works"""
         return self.run_test(
-            "Login with old dummy credentials",
+            "Login with old employee_id-based credentials",
             "POST",
             "login",
             401,
-            data={"employee_id": "EMP001", "password": "pass123"},
+            data={"employee_id": "HR001", "password": "Tejas#2377"},
             auth=False
         )[0]
 
