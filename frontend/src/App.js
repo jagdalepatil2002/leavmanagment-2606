@@ -147,7 +147,8 @@ function App() {
       });
 
       if (response.ok) {
-        alert('Leave submission successful!');
+        const result = await response.json();
+        alert(`✅ ${result.message}`);
         fetchMySubmissions();
         fetchLeaveStats(user.id, leaveForm.year);
         // Reset form
@@ -163,11 +164,11 @@ function App() {
         });
       } else {
         const error = await response.json();
-        alert(`Error: ${error.detail}`);
+        alert(`❌ Error: ${error.detail || 'Submission failed'}`);
       }
     } catch (error) {
       console.error('Submit error:', error);
-      alert('Submission failed. Please try again.');
+      alert('❌ Submission failed. Please try again.');
     }
     setLoading(false);
   };
