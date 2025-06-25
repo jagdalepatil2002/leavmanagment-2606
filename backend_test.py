@@ -475,11 +475,14 @@ class LeaveManagementTester:
         """Run all authentication-related tests"""
         print("\n==== AUTHENTICATION TESTS ====")
         
-        # Test HR login with new credentials
-        hr_login = self.test_login("tejasai", "Tejas#2377")
+        # Test HR login with master admin credentials
+        hr_login = self.test_login("tejasartificial", "Tejas#2377")
         
         # Test that old dummy credentials no longer work
         self.test_old_credentials_login()
+        
+        # Test invalid credentials
+        self.test_invalid_login()
         
         # Test that inactive users cannot login
         self.test_inactive_user_login()
