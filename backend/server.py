@@ -341,7 +341,8 @@ async def get_analytics(user_id: str, month: int, year: int, current_user: dict 
             "wfh_days": 0,
             "total_days": days_in_month,
             "month_name": calendar.month_name[month],
-            "year": year
+            "year": year,
+            "calculated_total_days_off": 0
         }
     
     # Calculate days
@@ -349,7 +350,9 @@ async def get_analytics(user_id: str, month: int, year: int, current_user: dict 
     weekends = sum(1 for i in range(1, days_in_month + 1) 
                    if datetime(year, month, i).weekday() >= 5)
     
-    total_leave_days = len(submission["monthly_leave_dates"]) + len(submission["optional_leave_dates"]) + len(submission["total_days_off_dates"])
+    # Use the calculated total days off
+    calculated_total_days_off = len(submission["monthly_leave_dates"]) + len(submission["optional_leave_dates"])
+    total_leave_days = calculated_total_days_off + len(submission["total_days_off_dates"])
     wfh_days = len(submission["wfh_dates"])
     working_days = days_in_month - weekends - total_leave_days
     
@@ -360,7 +363,8 @@ async def get_analytics(user_id: str, month: int, year: int, current_user: dict 
         "total_days": days_in_month,
         "month_name": calendar.month_name[month],
         "year": year,
-        "weekends": weekends
+        "weekends": weekends,
+        "calculated_total_days_off": calculated_total_days_off
     }
 
 @app.get("/api/hr-analytics")
