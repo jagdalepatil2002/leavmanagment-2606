@@ -470,6 +470,136 @@ class LeaveManagementTester:
             f"hr/delete-month-data/{month}/{year}",
             200
         )
+    def test_create_hr_user(self):
+        """Test creating a new HR user with same privileges"""
+        username = f"hr{random.randint(1000, 9999)}"
+        employee_id = f"HR{random.randint(1000, 9999)}"
+        password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+        department = "Human Resources"
+            
+        data = {
+            "name": f"Test HR {employee_id}",
+            "username": username,
+            "employee_id": employee_id,
+            "password": password,
+            "department": department
+        }
+        
+        success, response = self.run_test(
+            "Create new HR user with same privileges",
+            "POST",
+            "hr/create-hr",
+            200,
+            data=data
+        )
+        
+        if success and 'hr_user' in response:
+            # Verify username field is present in response
+            if 'username' in response['hr_user']:
+                self.log_result(
+                    "Verify username in HR user response", 
+                    True, 
+                    f"Username: {response['hr_user']['username']}"
+                )
+            else:
+                self.log_result(
+                    "Verify username in HR user response", 
+                    False, 
+                    "Username field missing from response"
+                )
+            
+            # Verify role is set to 'hr'
+            if response['hr_user'].get('role') == 'hr':
+                self.log_result(
+                    "Verify HR role in response", 
+                    True, 
+                    "Role correctly set to 'hr'"
+                )
+            else:
+                self.log_result(
+                    "Verify HR role in response", 
+                    False, 
+                    f"Role incorrectly set to '{response['hr_user'].get('role')}'"
+                )
+                
+            # Save HR credentials for testing HR privileges
+            self.created_hr_username = username
+            self.created_hr_password = password
+            self.created_hr_id = employee_id
+            
+            # Test HR privileges by logging in as the new HR user
+            current_token = self.token
+            current_user = self.user
+            
+            # Login as new HR user
+            hr_login = self.test_login(username, password)
+            
+            if hr_login:
+                # Test that new HR can access HR-only endpoint
+                success2, _ = self.run_test(
+                    "New HR user accessing HR endpoint",
+                    "GET",
+                    "all-submissions",
+                    200
+                )
+                
+                self.log_result(
+                    "New HR user has same privileges", 
+                    success2, 
+                    "Successfully accessed HR-only endpoint" if success2 else "Failed to access HR-only endpoint"
+                )
+                
+                # Restore original HR login
+                self.token = current_token
+                self.user = current_user
+            
+        # Test duplicate username validation
+        duplicate_username_data = {
+            "name": "Duplicate HR",
+            "username": username,  # Same username as before
+            "employee_id": f"HR{random.randint(10000, 99999)}",
+            "password": "password123",
+            "department": "HR"
+        }
+        
+        duplicate_success, duplicate_response = self.run_test(
+            "Create HR with duplicate username",
+            "POST",
+            "hr/create-hr",
+            400,  # Should fail with 400 Bad Request
+            data=duplicate_username_data
+        )
+        
+        self.log_result(
+            "Username uniqueness validation for HR creation", 
+            duplicate_success, 
+            "Correctly rejected duplicate username" if duplicate_success else "Failed to validate username uniqueness"
+        )
+        
+        # Test duplicate employee_id validation
+        duplicate_empid_data = {
+            "name": "Duplicate HR",
+            "username": f"hr{random.randint(10000, 99999)}",
+            "employee_id": employee_id,  # Same employee_id as before
+            "password": "password123",
+            "department": "HR"
+        }
+        
+        duplicate_empid_success, duplicate_empid_response = self.run_test(
+            "Create HR with duplicate employee_id",
+            "POST",
+            "hr/create-hr",
+            400,  # Should fail with 400 Bad Request
+            data=duplicate_empid_data
+        )
+        
+        self.log_result(
+            "Employee ID uniqueness validation for HR creation", 
+            duplicate_empid_success, 
+            "Correctly rejected duplicate employee_id" if duplicate_empid_success else "Failed to validate employee_id uniqueness"
+        )
+        
+        return success, response
 
     def run_authentication_tests(self):
         """Run all authentication-related tests"""
