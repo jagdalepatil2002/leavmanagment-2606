@@ -44,9 +44,17 @@ function App() {
   // HR Management state
   const [employees, setEmployees] = useState([]);
   const [showCreateEmployee, setShowCreateEmployee] = useState(false);
+  const [showCreateHR, setShowCreateHR] = useState(false);  // Add HR creation modal state
   const [newEmployee, setNewEmployee] = useState({
     name: '',
     username: '',  // Add username field
+    employee_id: '',
+    password: '',
+    department: ''
+  });
+  const [newHR, setNewHR] = useState({  // Add HR creation state
+    name: '',
+    username: '',
     employee_id: '',
     password: '',
     department: ''
