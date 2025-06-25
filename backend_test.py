@@ -246,18 +246,20 @@ class LeaveManagementTester:
 
     def test_unauthorized_access(self):
         """Test unauthorized access to HR endpoints"""
-        # Create an employee if needed
-        if not self.created_employee_id:
-            emp_id = f"EMP{random.randint(1000, 9999)}"
-            self.test_create_employee(emp_id, "password123", "Test Department")
+        # First login as HR to create an employee
+        hr_login_success = self.test_login("tejasai", "Tejas#2377")
+        if not hr_login_success:
+            return False
             
-            # Save current token and user
-            hr_token = self.token
-            hr_user = self.user
-            
-            # Login as the employee
-            self.test_login(emp_id, "password123")
+        # Create a new employee
+        emp_id = f"EMP{random.randint(1000, 9999)}"
+        self.test_create_employee(emp_id, "password123", "Test Department")
         
+        # Now login as the employee
+        emp_login_success = self.test_login(emp_id, "password123")
+        if not emp_login_success:
+            return False
+            
         print(f"Current user role: {self.user.get('role') if self.user else 'None'}")
         
         # Try to access HR-only endpoint
