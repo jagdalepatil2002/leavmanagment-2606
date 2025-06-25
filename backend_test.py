@@ -258,21 +258,27 @@ class LeaveManagementTester:
             # Login as the employee
             self.test_login(emp_id, "password123")
         
+        print(f"Current user role: {self.user.get('role') if self.user else 'None'}")
+        
         # Try to access HR-only endpoint
-        success, _ = self.run_test(
+        success, response = self.run_test(
             "Unauthorized access to HR endpoint",
             "GET",
             "all-submissions",
             403
         )
         
+        print(f"Response from unauthorized access: {response}")
+        
         # Try to access HR management endpoint
-        success2, _ = self.run_test(
+        success2, response2 = self.run_test(
             "Unauthorized access to HR management endpoint",
             "GET",
             "hr/employees",
             403
         )
+        
+        print(f"Response from unauthorized HR management access: {response2}")
         
         return success and success2
 
