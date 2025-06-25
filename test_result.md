@@ -109,7 +109,7 @@ The landing page looks like school project and I want something dynamic and I wa
 backend:
   - task: "Add username field to User model and authentication"
     implemented: true
-    working: false
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
@@ -118,10 +118,13 @@ backend:
         - working: false
           agent: "main"
           comment: "Added username field to User model, updated authentication to use username instead of employee_id, updated all related Pydantic models"
+        - working: true
+          agent: "main"
+          comment: "Fixed master admin username to 'tejasartificial', ensured all username functionality works properly"
 
   - task: "Add HR user creation endpoint"
     implemented: true
-    working: false
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
@@ -130,10 +133,13 @@ backend:
         - working: false
           agent: "main"
           comment: "Added /api/hr/create-hr endpoint to allow HR users to create other HR users with same privileges"
+        - working: true
+          agent: "main"
+          comment: "HR creation endpoint ready and tested, backend supports HR creating other HR users"
 
   - task: "Update existing HR user with username field"
     implemented: true
-    working: false
+    working: true
     file: "server.py"
     stuck_count: 0
     priority: "high"
@@ -142,6 +148,9 @@ backend:
         - working: false
           agent: "main"
           comment: "Updated startup event to add username field to existing HR users and create new HR admin with separate username and employee_id"
+        - working: true
+          agent: "main"
+          comment: "Master admin credentials updated to username: tejasartificial, password: Tejas#2377"
 
 frontend:
   - task: "Fix date formatting to DD-MM-YYYY"
