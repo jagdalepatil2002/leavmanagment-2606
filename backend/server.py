@@ -98,55 +98,21 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 # Initialize sample data
 @app.on_event("startup")
 async def startup_event():
-    # Check if users already exist
-    existing_users = await db.users.count_documents({})
-    if existing_users == 0:
-        sample_users = [
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Tejas Jagdale",
-                "employee_id": "EMP001",
-                "password": "pass123",
-                "role": "employee"
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Aniket Vadar",
-                "employee_id": "EMP002",
-                "password": "pass123",
-                "role": "employee"
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Priya Sharma",
-                "employee_id": "EMP003",
-                "password": "pass123",
-                "role": "employee"
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Rahul Patel",
-                "employee_id": "EMP004",
-                "password": "pass123",
-                "role": "employee"
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "Sneha Desai",
-                "employee_id": "EMP005",
-                "password": "pass123",
-                "role": "employee"
-            },
-            {
-                "id": str(uuid.uuid4()),
-                "name": "HR Admin",
-                "employee_id": "HR001",
-                "password": "hr123",
-                "role": "hr"
-            }
-        ]
-        await db.users.insert_many(sample_users)
-        print("Sample users created successfully!")
+    # Check if HR user already exists
+    existing_hr = await db.users.count_documents({"role": "hr"})
+    if existing_hr == 0:
+        # Create only the HR admin user
+        hr_user = {
+            "id": str(uuid.uuid4()),
+            "name": "HR Admin",
+            "employee_id": "tejasai",
+            "password": "Tejas#2377",
+            "role": "hr",
+            "department": "Human Resources",
+            "active": True
+        }
+        await db.users.insert_one(hr_user)
+        print("HR admin user created successfully!")
 
 # Routes
 @app.get("/api/")
