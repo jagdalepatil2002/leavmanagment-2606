@@ -450,8 +450,9 @@ class LeaveManagementTester:
         """Test deleting an employee"""
         if not employee_id:
             # Create a temporary employee to delete
+            username = f"temp{random.randint(1000, 9999)}"
             temp_id = f"TEMP{random.randint(1000, 9999)}"
-            _, response = self.test_create_employee(temp_id)
+            _, response = self.test_create_employee(username, temp_id)
             employee_id = temp_id
             
         return self.run_test(
