@@ -503,6 +503,9 @@ class LeaveManagementTester:
         # Test updating an employee
         self.test_update_employee()
         
+        # Test creating a new HR user
+        self.test_create_hr_user()
+        
         # Test revoking access
         self.test_revoke_access()
         
