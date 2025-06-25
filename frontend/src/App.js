@@ -41,11 +41,15 @@ function App() {
     year: new Date().getFullYear()
   });
 
-  // Submissions state
-  const [submissions, setSubmissions] = useState([]);
-  const [leaveStats, setLeaveStats] = useState(null);
-  const [analytics, setAnalytics] = useState(null);
-  const [hrAnalytics, setHrAnalytics] = useState(null);
+  // HR Management state
+  const [employees, setEmployees] = useState([]);
+  const [showCreateEmployee, setShowCreateEmployee] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    employee_id: '',
+    password: '',
+    department: ''
+  });
 
   // Refs for date inputs
   const dateInputRefs = useRef({});
