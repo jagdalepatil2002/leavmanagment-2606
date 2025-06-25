@@ -636,6 +636,18 @@ function App() {
                 ✍️ Submit Leave
               </button>
             )}
+            {user.role === 'hr' && (
+              <button
+                onClick={() => setActiveTab('hr-management')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                  activeTab === 'hr-management'
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                👥 HR Management
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('analytics')}
               className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
