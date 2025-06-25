@@ -735,7 +735,7 @@ class LeaveManagementTester:
             # Already logged in as employee or need to create one
             if not self.user:
                 # Login as HR first
-                if not self.test_login("tejasai", "Tejas#2377"):
+                if not self.test_login("tejasartificial", "Tejas#2377"):
                     return False
                 
                 # Create employee with username
