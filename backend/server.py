@@ -115,7 +115,7 @@ async def startup_event():
         hr_user = {
             "id": str(uuid.uuid4()),
             "name": "HR Admin",
-            "username": "tejasai",  # Username for login
+            "username": "tejasartificial",  # Username for login
             "employee_id": "HR001",  # Separate employee ID
             "password": "Tejas#2377",
             "role": "hr",
