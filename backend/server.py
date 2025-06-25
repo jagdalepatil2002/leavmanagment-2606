@@ -241,7 +241,7 @@ async def export_excel(current_user: dict = Depends(get_current_user)):
     
     submissions = []
     async for submission in db.leave_submissions.find({}):
-        submission.pop("_id", None)
+        submission.pop("_id", None)  # Remove MongoDB ObjectId
         submissions.append(submission)
     
     if not submissions:
