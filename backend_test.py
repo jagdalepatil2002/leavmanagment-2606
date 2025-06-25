@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 
 class LeaveManagementTester:
-    def __init__(self, base_url="https://75c180b0-686f-4858-ace2-caa2abeefa8f.preview.emergentagent.com"):
+    def __init__(self, base_url="https://3e2377aa-7739-4d6a-bb31-d9ac8ad5816f.preview.emergentagent.com"):
         self.base_url = base_url
         self.token = None
         self.user = None
