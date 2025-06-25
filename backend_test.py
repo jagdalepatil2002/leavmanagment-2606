@@ -527,12 +527,13 @@ class LeaveManagementTester:
             hr_token = self.token
             hr_user = self.user
             
-            # Create employee
+            # Create employee with username
+            username = f"user{random.randint(1000, 9999)}"
             emp_id = f"EMP{random.randint(1000, 9999)}"
-            self.test_create_employee(emp_id, "password123", "Test Department")
+            self.test_create_employee(username, emp_id, "password123", "Test Department")
             
             # Login as the employee
-            self.test_login(emp_id, "password123")
+            self.test_login(username, "password123")
         else:
             # Already logged in as employee or need to create one
             if not self.user:
@@ -540,12 +541,13 @@ class LeaveManagementTester:
                 if not self.test_login("tejasai", "Tejas#2377"):
                     return False
                 
-                # Create employee
+                # Create employee with username
+                username = f"user{random.randint(1000, 9999)}"
                 emp_id = f"EMP{random.randint(1000, 9999)}"
-                self.test_create_employee(emp_id, "password123", "Test Department")
+                self.test_create_employee(username, emp_id, "password123", "Test Department")
                 
                 # Login as the employee
-                self.test_login(emp_id, "password123")
+                self.test_login(username, "password123")
         
         # Test leave submission with total days calculation
         self.test_submit_leave(2, 2025)
