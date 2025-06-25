@@ -139,7 +139,7 @@ async def root():
 @app.post("/api/login")
 async def login(request: LoginRequest):
     user = await db.users.find_one({
-        "employee_id": request.employee_id,
+        "username": request.username,  # Changed to use username
         "password": request.password,
         "active": True  # Only allow active users to login
     })
@@ -151,6 +151,7 @@ async def login(request: LoginRequest):
     token = json.dumps({
         "id": user["id"],
         "name": user["name"],
+        "username": user["username"],  # Include username in token
         "employee_id": user["employee_id"],
         "role": user["role"],
         "department": user.get("department")
@@ -161,6 +162,7 @@ async def login(request: LoginRequest):
         "user": {
             "id": user["id"],
             "name": user["name"],
+            "username": user["username"],  # Include username in response
             "employee_id": user["employee_id"],
             "role": user["role"],
             "department": user.get("department")
