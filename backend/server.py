@@ -115,7 +115,8 @@ async def startup_event():
         hr_user = {
             "id": str(uuid.uuid4()),
             "name": "HR Admin",
-            "employee_id": "tejasai",
+            "username": "tejasai",  # Username for login
+            "employee_id": "HR001",  # Separate employee ID
             "password": "Tejas#2377",
             "role": "hr",
             "department": "Human Resources",
@@ -123,6 +124,12 @@ async def startup_event():
         }
         await db.users.insert_one(hr_user)
         print("HR admin user created successfully!")
+    else:
+        # Update existing HR users to have username field if they don't
+        await db.users.update_many(
+            {"role": "hr", "username": {"$exists": False}},
+            {"$set": {"username": "tejasai"}}
+        )
 
 # Routes
 @app.get("/api/")
