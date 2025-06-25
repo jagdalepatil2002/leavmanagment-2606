@@ -229,7 +229,7 @@ async def get_all_submissions(current_user: dict = Depends(get_current_user)):
     
     submissions = []
     async for submission in db.leave_submissions.find({}):
-        submission.pop("_id", None)
+        submission.pop("_id", None)  # Remove MongoDB ObjectId
         submissions.append(submission)
     
     return {"submissions": submissions}
