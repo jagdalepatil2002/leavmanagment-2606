@@ -107,80 +107,41 @@ The UI Sucks it looks like 19th century use some good color combanition bg color
 The landing page looks like school project and I want something dynamic and I want everthing end to end ready for deployment also one more thing HR can add entity who has same privilages as her self means role based access control"
 
 backend:
-  - task: "Update User model with department and active fields"
+  - task: "Add username field to User model and authentication"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-        - working: true
+        - working: false
           agent: "main"
-          comment: "Added department and active fields to User model, updated Pydantic models"
-        - working: true
-          agent: "testing"
-          comment: "Verified department and active fields are working correctly in User model. Tests for creating employees with departments and checking active status passed."
+          comment: "Added username field to User model, updated authentication to use username instead of employee_id, updated all related Pydantic models"
 
-  - task: "Remove dummy user initialization and add HR admin"
+  - task: "Add HR user creation endpoint"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-        - working: true
+        - working: false
           agent: "main"
-          comment: "Removed all dummy employees, added only HR admin with tejasai/Tejas#2377 credentials"
-        - working: true
-          agent: "testing"
-          comment: "Verified HR admin login works with tejasai/Tejas#2377 credentials. Old dummy credentials no longer work."
+          comment: "Added /api/hr/create-hr endpoint to allow HR users to create other HR users with same privileges"
 
-  - task: "Fix total days off calculation (monthly + optional leaves)"
+  - task: "Update existing HR user with username field"
     implemented: true
-    working: true
+    working: false
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
-        - working: true
+        - working: false
           agent: "main"
-          comment: "Updated leave submission to calculate total_days_off as monthly_leave_dates + optional_leave_dates, added calculated_total_days_off field"
-        - working: true
-          agent: "testing"
-          comment: "Verified total_days_off calculation works correctly. The calculated_total_days_off field is returned in responses and equals the sum of monthly_leave_dates and optional_leave_dates."
-
-  - task: "Add HR management endpoints"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Added HR endpoints: create-employee, get employees, update-employee, delete-employee, revoke-access, delete-month-data"
-        - working: true
-          agent: "testing"
-          comment: "All HR management endpoints are working correctly. Successfully tested create-employee, get employees, update-employee, delete-employee, revoke-access, and delete-month-data endpoints."
-
-  - task: "Update login endpoint for active users only"
-    implemented: true
-    working: true
-    file: "server.py"
-    stuck_count: 0
-    priority: "high"
-    needs_retesting: false
-    status_history:
-        - working: true
-          agent: "main"
-          comment: "Updated login to only allow active users, added department to token and response"
-        - working: true
-          agent: "testing"
-          comment: "Verified login endpoint only allows active users. Inactive users cannot login. Department is included in token and response."
+          comment: "Updated startup event to add username field to existing HR users and create new HR admin with separate username and employee_id"
 
 frontend:
   - task: "Fix date formatting to DD-MM-YYYY"
