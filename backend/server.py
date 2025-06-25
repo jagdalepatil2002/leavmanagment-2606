@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 from io import BytesIO
 import json
+import calendar
 
 # Database setup
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
@@ -211,36 +212,66 @@ async def submit_leave(request: LeaveSubmissionRequest, current_user: dict = Dep
     return {"message": message, "submission": submission_data}
 
 @app.get("/api/my-submissions")
-async def get_my_submissions(current_user: dict = Depends(get_current_user)):
+async def get_my_submissions(month: Optional[int] = None, year: Optional[int] = None, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "employee":
         raise HTTPException(status_code=403, detail="Only employees can view their submissions")
     
+    filter_query = {"user_id": current_user["id"]}
+    if month:
+        filter_query["month"] = month
+    if year:
+        filter_query["year"] = year
+    
     submissions = []
-    async for submission in db.leave_submissions.find({"user_id": current_user["id"]}):
+    async for submission in db.leave_submissions.find(filter_query).sort("year", -1).sort("month", -1):
         submission.pop("_id", None)  # Remove MongoDB ObjectId
         submissions.append(submission)
     
     return {"submissions": submissions}
 
 @app.get("/api/all-submissions")
-async def get_all_submissions(current_user: dict = Depends(get_current_user)):
+async def get_all_submissions(month: Optional[int] = None, year: Optional[int] = None, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "hr":
         raise HTTPException(status_code=403, detail="Only HR can view all submissions")
     
+    filter_query = {}
+    if month:
+        filter_query["month"] = month
+    if year:
+        filter_query["year"] = year
+    
     submissions = []
-    async for submission in db.leave_submissions.find({}):
+    async for submission in db.leave_submissions.find(filter_query).sort("year", -1).sort("month", -1):
         submission.pop("_id", None)  # Remove MongoDB ObjectId
         submissions.append(submission)
     
     return {"submissions": submissions}
 
+@app.delete("/api/delete-submission/{submission_id}")
+async def delete_submission(submission_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can delete submissions")
+    
+    result = await db.leave_submissions.delete_one({"id": submission_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    
+    return {"message": "Submission deleted successfully"}
+
 @app.get("/api/export-excel")
-async def export_excel(current_user: dict = Depends(get_current_user)):
+async def export_excel(month: Optional[int] = None, year: Optional[int] = None, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "hr":
         raise HTTPException(status_code=403, detail="Only HR can export data")
     
+    filter_query = {}
+    if month:
+        filter_query["month"] = month
+    if year:
+        filter_query["year"] = year
+    
     submissions = []
-    async for submission in db.leave_submissions.find({}):
+    async for submission in db.leave_submissions.find(filter_query).sort("year", -1).sort("month", -1):
         submission.pop("_id", None)  # Remove MongoDB ObjectId
         submissions.append(submission)
     
@@ -273,10 +304,17 @@ async def export_excel(current_user: dict = Depends(get_current_user)):
     
     output.seek(0)
     
+    filename = f"leave_submissions"
+    if month and year:
+        filename += f"_{year}_{month:02d}"
+    elif year:
+        filename += f"_{year}"
+    filename += ".xlsx"
+    
     return StreamingResponse(
         BytesIO(output.read()),
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        headers={"Content-Disposition": "attachment; filename=leave_submissions.xlsx"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 @app.get("/api/leave-stats/{user_id}")
@@ -293,6 +331,86 @@ async def get_leave_stats(user_id: str, year: int, current_user: dict = Depends(
         "total_optional_leaves_used": total_optional_leaves,
         "remaining_optional_leaves": remaining_optional_leaves,
         "submissions_count": len(submissions)
+    }
+
+@app.get("/api/analytics/{user_id}")
+async def get_analytics(user_id: str, month: int, year: int, current_user: dict = Depends(get_current_user)):
+    # Get submission for specific month
+    submission = await db.leave_submissions.find_one({
+        "user_id": user_id,
+        "month": month,
+        "year": year
+    })
+    
+    if not submission:
+        # Return default data for months without submissions
+        days_in_month = calendar.monthrange(year, month)[1]
+        return {
+            "working_days": days_in_month - 8,  # Assuming ~8 weekends
+            "leave_days": 0,
+            "wfh_days": 0,
+            "total_days": days_in_month,
+            "month_name": calendar.month_name[month],
+            "year": year
+        }
+    
+    # Calculate days
+    days_in_month = calendar.monthrange(year, month)[1]
+    weekends = sum(1 for i in range(1, days_in_month + 1) 
+                   if datetime(year, month, i).weekday() >= 5)
+    
+    total_leave_days = len(submission["monthly_leave_dates"]) + len(submission["optional_leave_dates"]) + len(submission["total_days_off_dates"])
+    wfh_days = len(submission["wfh_dates"])
+    working_days = days_in_month - weekends - total_leave_days
+    
+    return {
+        "working_days": max(0, working_days),
+        "leave_days": total_leave_days,
+        "wfh_days": wfh_days,
+        "total_days": days_in_month,
+        "month_name": calendar.month_name[month],
+        "year": year,
+        "weekends": weekends
+    }
+
+@app.get("/api/hr-analytics")
+async def get_hr_analytics(month: int, year: int, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can view analytics")
+    
+    # Get all submissions for the month
+    submissions = []
+    async for submission in db.leave_submissions.find({"month": month, "year": year}):
+        submissions.append(submission)
+    
+    # Calculate overall statistics
+    total_employees = await db.users.count_documents({"role": "employee"})
+    employees_submitted = len(set(sub["user_id"] for sub in submissions))
+    
+    total_leave_days = sum(
+        len(sub["monthly_leave_dates"]) + len(sub["optional_leave_dates"]) + len(sub["total_days_off_dates"])
+        for sub in submissions
+    )
+    
+    total_wfh_days = sum(len(sub["wfh_dates"]) for sub in submissions)
+    
+    # Days in month calculation
+    days_in_month = calendar.monthrange(year, month)[1]
+    weekends = sum(1 for i in range(1, days_in_month + 1) 
+                   if datetime(year, month, i).weekday() >= 5)
+    
+    working_days_possible = (days_in_month - weekends) * employees_submitted
+    actual_working_days = working_days_possible - total_leave_days
+    
+    return {
+        "total_employees": total_employees,
+        "employees_submitted": employees_submitted,
+        "total_leave_days": total_leave_days,
+        "total_wfh_days": total_wfh_days,
+        "working_days": max(0, actual_working_days),
+        "month_name": calendar.month_name[month],
+        "year": year,
+        "submission_rate": round((employees_submitted / total_employees) * 100, 1) if total_employees > 0 else 0
     }
 
 if __name__ == "__main__":
