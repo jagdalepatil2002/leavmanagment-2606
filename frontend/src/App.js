@@ -19,7 +19,7 @@ function App() {
   
   // Login state
   const [loginData, setLoginData] = useState({
-    employee_id: '',
+    username: '',  // Changed from employee_id to username
     password: ''
   });
 
