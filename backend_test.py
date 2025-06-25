@@ -377,26 +377,58 @@ class LeaveManagementTester:
         return success, response
 
     def test_update_employee(self, employee_id=None):
-        """Test updating an employee"""
+        """Test updating an employee including username field"""
         if not employee_id and self.created_employee_id:
             employee_id = self.created_employee_id
         elif not employee_id:
             # Create an employee first
-            _, response = self.test_create_employee()
+            username = f"user{random.randint(1000, 9999)}"
+            _, response = self.test_create_employee(username)
             employee_id = self.created_employee_id
             
+        # Update with new username
+        new_username = f"updated{random.randint(1000, 9999)}"
         data = {
             "name": f"Updated Employee {employee_id}",
+            "username": new_username,  # Update username
             "department": "Updated Department"
         }
         
-        return self.run_test(
-            f"Update employee {employee_id}",
+        success, response = self.run_test(
+            f"Update employee {employee_id} with new username",
             "PUT",
             f"hr/update-employee/{employee_id}",
             200,
             data=data
         )
+        
+        # Test username uniqueness validation by trying to update another employee with same username
+        if success:
+            # Create another employee
+            temp_username = f"temp{random.randint(1000, 9999)}"
+            temp_id = f"TEMP{random.randint(1000, 9999)}"
+            _, _ = self.test_create_employee(temp_username, temp_id)
+            
+            # Try to update with already used username
+            data = {
+                "username": new_username  # Already used by first employee
+            }
+            
+            duplicate_success, duplicate_response = self.run_test(
+                "Update employee with duplicate username",
+                "PUT",
+                f"hr/update-employee/{temp_id}",
+                400,  # Should fail with 400 Bad Request
+                data=data
+            )
+            
+            self.log_result(
+                "Username uniqueness validation during update", 
+                duplicate_success, 
+                "Correctly rejected duplicate username" if duplicate_success else "Failed to validate username uniqueness"
+            )
+        
+        return success, response
 
     def test_revoke_access(self, employee_id=None):
         """Test revoking employee access"""
