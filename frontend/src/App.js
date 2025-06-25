@@ -51,6 +51,12 @@ function App() {
     department: ''
   });
 
+  // Submissions state
+  const [submissions, setSubmissions] = useState([]);
+  const [leaveStats, setLeaveStats] = useState(null);
+  const [analytics, setAnalytics] = useState(null);
+  const [hrAnalytics, setHrAnalytics] = useState(null);
+
   // Refs for date inputs
   const dateInputRefs = useRef({});
 
