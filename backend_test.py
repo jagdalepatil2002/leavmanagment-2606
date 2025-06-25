@@ -128,9 +128,10 @@ class LeaveManagementTester:
 
     def test_inactive_user_login(self):
         """Test that inactive users cannot login"""
-        # First create an employee
+        # First create an employee with username
+        username = f"user{random.randint(1000, 9999)}"
         emp_id = f"EMP{random.randint(1000, 9999)}"
-        self.test_create_employee(emp_id, "password123", "Test Department")
+        self.test_create_employee(username, emp_id, "password123", "Test Department")
         
         # Then revoke access
         self.test_revoke_access(emp_id)
@@ -141,7 +142,7 @@ class LeaveManagementTester:
             "POST",
             "login",
             401,
-            data={"employee_id": emp_id, "password": "password123"},
+            data={"username": username, "password": "password123"},
             auth=False
         )[0]
 
