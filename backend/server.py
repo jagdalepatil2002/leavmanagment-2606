@@ -472,6 +472,38 @@ async def get_employees(current_user: dict = Depends(get_current_user)):
     
     return {"employees": employees}
 
+@app.post("/api/hr/create-hr")
+async def create_hr(request: CreateHRRequest, current_user: dict = Depends(get_current_user)):
+    if current_user["role"] != "hr":
+        raise HTTPException(status_code=403, detail="Only HR can create other HR users")
+    
+    # Check if username already exists
+    existing_username = await db.users.find_one({"username": request.username})
+    if existing_username:
+        raise HTTPException(status_code=400, detail="Username already exists")
+    
+    # Check if employee ID already exists
+    existing_employee_id = await db.users.find_one({"employee_id": request.employee_id})
+    if existing_employee_id:
+        raise HTTPException(status_code=400, detail="Employee ID already exists")
+    
+    hr_data = {
+        "id": str(uuid.uuid4()),
+        "name": request.name,
+        "username": request.username,
+        "employee_id": request.employee_id,
+        "password": request.password,
+        "role": "hr",  # Create HR user instead of employee
+        "department": request.department or "Human Resources",
+        "active": True
+    }
+    
+    await db.users.insert_one(hr_data)
+    hr_data.pop("_id", None)
+    hr_data.pop("password", None)  # Don't return password
+    
+    return {"message": "HR user created successfully", "hr_user": hr_data}
+
 @app.put("/api/hr/update-employee/{employee_id}")
 async def update_employee(employee_id: str, request: UpdateEmployeeRequest, current_user: dict = Depends(get_current_user)):
     if current_user["role"] != "hr":
