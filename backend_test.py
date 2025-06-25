@@ -6,7 +6,7 @@ import string
 from datetime import datetime
 
 class LeaveManagementTester:
-    def __init__(self, base_url="https://b2c330d1-d20a-484f-99a3-97a17686e6cb.preview.emergentagent.com"):
+    def __init__(self, base_url="http://localhost:8001"):
         self.base_url = base_url
         self.token = None
         self.user = None
