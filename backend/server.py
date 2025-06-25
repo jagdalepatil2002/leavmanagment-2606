@@ -206,6 +206,8 @@ async def submit_leave(request: LeaveSubmissionRequest, current_user: dict = Dep
         await db.leave_submissions.insert_one(submission_data)
         message = "Leave submission created successfully"
     
+    # Remove MongoDB _id field before returning
+    submission_data.pop("_id", None)
     return {"message": message, "submission": submission_data}
 
 @app.get("/api/my-submissions")
