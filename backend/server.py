@@ -38,6 +38,20 @@ class User(BaseModel):
     employee_id: str
     password: str
     role: str  # 'employee' or 'hr'
+    department: Optional[str] = None
+    active: bool = True
+
+class CreateEmployeeRequest(BaseModel):
+    name: str
+    employee_id: str
+    password: str
+    department: Optional[str] = None
+
+class UpdateEmployeeRequest(BaseModel):
+    name: Optional[str] = None
+    password: Optional[str] = None
+    department: Optional[str] = None
+    active: Optional[bool] = None
 
 class LoginRequest(BaseModel):
     employee_id: str
