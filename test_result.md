@@ -120,11 +120,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "Added department and active fields to User model, updated Pydantic models"
+        - working: true
+          agent: "testing"
+          comment: "Verified department and active fields are working correctly in User model. Tests for creating employees with departments and checking active status passed."
 
   - task: "Remove dummy user initialization and add HR admin"
     implemented: true
@@ -132,11 +135,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "Removed all dummy employees, added only HR admin with tejasai/Tejas#2377 credentials"
+        - working: true
+          agent: "testing"
+          comment: "Verified HR admin login works with tejasai/Tejas#2377 credentials. Old dummy credentials no longer work."
 
   - task: "Fix total days off calculation (monthly + optional leaves)"
     implemented: true
@@ -144,11 +150,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "Updated leave submission to calculate total_days_off as monthly_leave_dates + optional_leave_dates, added calculated_total_days_off field"
+        - working: true
+          agent: "testing"
+          comment: "Verified total_days_off calculation works correctly. The calculated_total_days_off field is returned in responses and equals the sum of monthly_leave_dates and optional_leave_dates."
 
   - task: "Add HR management endpoints"
     implemented: true
@@ -156,11 +165,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "Added HR endpoints: create-employee, get employees, update-employee, delete-employee, revoke-access, delete-month-data"
+        - working: true
+          agent: "testing"
+          comment: "All HR management endpoints are working correctly. Successfully tested create-employee, get employees, update-employee, delete-employee, revoke-access, and delete-month-data endpoints."
 
   - task: "Update login endpoint for active users only"
     implemented: true
@@ -168,11 +180,14 @@ backend:
     file: "server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: true
           agent: "main"
           comment: "Updated login to only allow active users, added department to token and response"
+        - working: true
+          agent: "testing"
+          comment: "Verified login endpoint only allows active users. Inactive users cannot login. Department is included in token and response."
 
 frontend:
   - task: "Fix date formatting to DD-MM-YYYY"
