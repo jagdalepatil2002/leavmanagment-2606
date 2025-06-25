@@ -112,7 +112,7 @@ function App() {
         setToken(data.token);
         setUser(data.user);
         localStorage.setItem('token', data.token);
-        setLoginData({ employee_id: '', password: '' });
+        setLoginData({ username: '', password: '' });
       } else {
         alert('❌ Invalid credentials');
       }
