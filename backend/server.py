@@ -123,7 +123,8 @@ async def root():
 async def login(request: LoginRequest):
     user = await db.users.find_one({
         "employee_id": request.employee_id,
-        "password": request.password
+        "password": request.password,
+        "active": True  # Only allow active users to login
     })
     
     if not user:
@@ -134,7 +135,8 @@ async def login(request: LoginRequest):
         "id": user["id"],
         "name": user["name"],
         "employee_id": user["employee_id"],
-        "role": user["role"]
+        "role": user["role"],
+        "department": user.get("department")
     })
     
     return {
@@ -143,7 +145,8 @@ async def login(request: LoginRequest):
             "id": user["id"],
             "name": user["name"],
             "employee_id": user["employee_id"],
-            "role": user["role"]
+            "role": user["role"],
+            "department": user.get("department")
         }
     }
 
