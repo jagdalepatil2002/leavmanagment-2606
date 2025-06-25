@@ -1032,13 +1032,22 @@ function App() {
                 </h2>
                 <p className="text-gray-600">Manage employees, departments, and access permissions</p>
               </div>
-              <button
-                onClick={() => setShowCreateEmployee(true)}
-                className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center space-x-2 shadow-lg font-medium"
-              >
-                <span>➕</span>
-                <span>Add Employee</span>
-              </button>
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowCreateEmployee(true)}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 flex items-center space-x-2 shadow-lg font-medium"
+                >
+                  <span>➕</span>
+                  <span>Add Employee</span>
+                </button>
+                <button
+                  onClick={() => setShowCreateHR(true)}
+                  className="bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-lg font-medium"
+                >
+                  <span>👤</span>
+                  <span>Add HR User</span>
+                </button>
+              </div>
             </div>
 
             {/* Create Employee Modal */}
