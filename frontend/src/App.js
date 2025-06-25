@@ -1050,6 +1050,87 @@ function App() {
               </div>
             </div>
 
+            {/* Create HR Modal */}
+            {showCreateHR && (
+              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+                  <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                    <span className="mr-2">👤</span>
+                    Create New HR User
+                  </h3>
+                  <form onSubmit={createHR} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        value={newHR.name}
+                        onChange={(e) => setNewHR(prev => ({...prev, name: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                      <input
+                        type="text"
+                        value={newHR.username}
+                        onChange={(e) => setNewHR(prev => ({...prev, username: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        placeholder="Login username"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Employee ID</label>
+                      <input
+                        type="text"
+                        value={newHR.employee_id}
+                        onChange={(e) => setNewHR(prev => ({...prev, employee_id: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                      <input
+                        type="password"
+                        value={newHR.password}
+                        onChange={(e) => setNewHR(prev => ({...prev, password: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
+                      <input
+                        type="text"
+                        value={newHR.department}
+                        onChange={(e) => setNewHR(prev => ({...prev, department: e.target.value}))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                        placeholder="e.g., Human Resources"
+                      />
+                    </div>
+                    <div className="flex space-x-3 pt-4">
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 px-4 rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium"
+                      >
+                        {loading ? 'Creating...' : 'Create HR User'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowCreateHR(false)}
+                        className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors duration-200 font-medium"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+
             {/* Create Employee Modal */}
             {showCreateEmployee && (
               <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
