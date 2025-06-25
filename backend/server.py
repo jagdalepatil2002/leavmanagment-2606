@@ -35,6 +35,7 @@ security = HTTPBearer()
 class User(BaseModel):
     id: str
     name: str
+    username: str  # New username field for login
     employee_id: str
     password: str
     role: str  # 'employee' or 'hr'
@@ -43,18 +44,27 @@ class User(BaseModel):
 
 class CreateEmployeeRequest(BaseModel):
     name: str
+    username: str  # New username field
+    employee_id: str
+    password: str
+    department: Optional[str] = None
+
+class CreateHRRequest(BaseModel):
+    name: str
+    username: str  # New username field
     employee_id: str
     password: str
     department: Optional[str] = None
 
 class UpdateEmployeeRequest(BaseModel):
     name: Optional[str] = None
+    username: Optional[str] = None  # Allow username updates
     password: Optional[str] = None
     department: Optional[str] = None
     active: Optional[bool] = None
 
 class LoginRequest(BaseModel):
-    employee_id: str
+    username: str  # Changed from employee_id to username
     password: str
 
 class LeaveSubmission(BaseModel):
