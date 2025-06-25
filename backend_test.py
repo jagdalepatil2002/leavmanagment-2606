@@ -6,7 +6,19 @@ import string
 from datetime import datetime
 
 class LeaveManagementTester:
-    def __init__(self, base_url="http://localhost:8001"):
+    def __init__(self, base_url=None):
+        if base_url is None:
+            # Try to read from frontend .env file
+            try:
+                with open('/app/frontend/.env', 'r') as f:
+                    for line in f:
+                        if line.startswith('REACT_APP_BACKEND_URL='):
+                            base_url = line.strip().split('=', 1)[1].strip('"\'')
+                            break
+            except:
+                # Default fallback
+                base_url = "http://localhost:8001"
+        
         self.base_url = base_url
         self.token = None
         self.user = None
@@ -15,6 +27,11 @@ class LeaveManagementTester:
         self.test_results = []
         self.created_employee_id = None
         self.created_employee_uuid = None
+        self.created_hr_username = None
+        self.created_hr_password = None
+        self.created_hr_id = None
+        
+        print(f"Using backend URL: {self.base_url}")
 
     def log_result(self, test_name, success, message="", response=None):
         """Log test result with details"""
